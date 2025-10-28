@@ -20,10 +20,10 @@ function listarcategorias(nomeid){
 }
 
 // função de listar banners em tabela
-function listarBanners(lcupoms) {
+function listarcupoms(lcupoms) {
   document.addEventListener('DOMContentLoaded', () => {
     const tbody = document.getElementById(lcupoms);
-    const url   = '../php/cadastro_bannes.php?listar=1&format=json';
+    const url   = '../php/cadastro_cupoms.php?listar=1&format=json';
 
     // Função para escapar caracteres especiais
     const esc = s => (s||'').replace(/[&<>"']/g, c => ({
@@ -43,8 +43,6 @@ function listarBanners(lcupoms) {
       <tr>
         <td>${Number(b.id) || ''}</td>
         <td>${esc(b.nome || '-')}</td>
-        <td>${formatData(b.data_validade)}</td>
-        <td>${esc(b.link || '-')}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-warning" data-id="${b.id}">
             <i class="bi bi-pencil"></i> Editar
@@ -72,3 +70,5 @@ function listarBanners(lcupoms) {
 }
 
 // Chama a função para listar cupoms
+listarcupoms('lcupoms');
+

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loja Virtual</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Font Awesome (opcional, só se quiser manter) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="../CSS/stely.css">
+</head>
+
+<body>
+
+  <!-- Barra Superior -->
+  <header class="topbar d-flex fixed-top align-items-center justify-content-between px-2 w-100 bg-primary">
+    <div class="logo">
+      <i class="bi bi-star-fill text-warning fs-4"></i>
+    </div>
+    <div class="search-box flex-grow-1 mx-2 d-flex align-items-center">
+      <i class="bi bi-search mx-2 text-muted"></i>
+      <input type="text" placeholder="Pesquisar..." class="form-control border-0 shadow-none">
+      <i class="bi bi-camera-fill mx-2 text-muted"></i>
+    </div>
+    
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="corpo container-fluid pt-5">
+
+    <!-- Carrossel de Vídeos -->
+    <div id="videoCarousel" class="carousel slide mt-5" data-bs-ride="carousel" data-bs-interval="false">
+      <div class="carousel-inner">
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+          <video class="d-block w-100" autoplay muted loop>
+            <source src="../IMG/Banner 3.PNG.mp4" type="video/mp4">
+            Seu navegador não suporta vídeos.
+          </video>
+        </div>
+        <!-- Slide 2 -->
+        <div class="carousel-item">
+          <video class="d-block w-100" autoplay muted loop>
+            <source src="../IMG/Banner 2.PNG.mp4" type="video/mp4">
+            Seu navegador não suporta vídeos.
+          </video>
+        </div>
+        <!-- Slide 3 -->
+        <div class="carousel-item">
+          <video class="d-block w-100" autoplay muted loop>
+            <source src="../IMG/Banner 1.PNG.mp4" type="video/mp4">
+            Seu navegador não suporta vídeos.
+          </video>
+        </div>
+      </div>
+
+      <!-- Controles -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#videoCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#videoCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
+
+      <!-- Indicadores -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#videoCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#videoCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#videoCarousel" data-bs-slide-to="2"></button>
+      </div>
+    </div>
+
+    <!-- Produtos Linha 1 -->
+    <div class="row g-2 mt-5 mb-5">
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/processador.png" class="card-img-top">
+          <p>Processador Intel i5</p>
+          <span class="price">R$ 950,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/placa mãe.png">
+          <p>Placa Mãe Asus B450</p>
+          <span class="price">R$ 580,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/gabinete 2.png">
+          <p>Gabinete Gamer Rise Mode Galaxy Glass</p>
+          <span class="price">R$ 160,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/placa de video.png">
+          <p>Placa de Vídeo RX 580</p>
+          <span class="price">R$ 990,00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logos -->
+    <div class="d-flex justify-content-around my-3">
+      <img src="../IMG/pichau.png" class="rounded-circle">
+      <img src="../IMG/razer.png" class="rounded-circle">
+      <img src="../IMG/hyperx.jpg" class="rounded-circle">
+    </div>
+
+    <!-- Banner Gamer -->
+    <div class="banner text-center my-3">
+      <img src="../IMG/Preto e Amarelo Escuro Gamer Sobrevivência Miniatura para YouTube.png" class="img-fluid rounded">
+    </div>
+
+    <!-- Produtos Linha 2 -->
+    <div class="produtosl2 row g-2 mt-5">
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/PC GAMER.png">
+          <p>PC Gamer Completo</p>
+          <span class="price">R$ 3.200,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/gabinete 2.png">
+          <p>Gabinete RGB ATX</p>
+          <span class="price">R$ 480,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../img/Headset Gamer Sem fio HyperX.png">
+          <p>Headset Gamer</p>
+          <span class="price">R$ 230,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/Monitor Gamer Predator 27.png">
+          <p>Monitor 27"</p>
+          <span class="price">R$ 1.250,00</span>
+        </div>
+      </div>
+    </div>
+
+ <div class="produtosl2 row g-2 mt-5">
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/PC GAMER.png">
+          <p>PC Gamer Completo</p>
+          <span class="price">R$ 3.200,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/munitor 3.png">
+          <p>GMonitor Gamer AOC LEGEND 27 Curvo 240Hz 0,5ms C27G2ZE</p>
+          <span class="price">R$ 1.614,00</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../img/fone.png">
+          <p>FUNINGEEK Fone de ouvido para jogos para PS4/PS5/Xbox One</p>
+          <span class="price">R$ 142,80</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-2 text-center">
+          <img src="../IMG/gabinete completo.png">
+          <p>Pc Gamer Completo Ryzen 5 5500, 16GB 3200Mhz"</p>
+          <span class="price">R$  8.129,90</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Menu Inferior -->
+  <footer class="bottom-nav d-flex justify-content-around align-items-center bg-primary  border-top nav-item text-white  py-2 ">
+    <div class="nav-item text-center">
+      <i class="bi bi-house-door-fill fs-4"></i><br>Início
+    </div>
+    <div class="nav-item text-center">
+      <i class="bi bi-tags-fill fs-4"></i><br>Ofertas
+    </div>
+    <div class="nav-item text-center">
+      <i class="bi bi-controller fs-4"></i><br>Frete grátis
+    </div>
+    <div class="nav-item text-center">
+      <i class="bi bi-bell-fill fs-4"></i><br>Notificações
+    </div>
+    <div class="nav-item text-center">
+      <i class="bi bi-person-fill fs-4"></i><br>Eu
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+
+
+    
+</body>
+</html>

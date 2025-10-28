@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrinho</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="../css/stely.css">
+
+
+</head>
+  <body>
+   <!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Favoritos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    
+    </style>
+  </head>
+  <body>
+    
+    <!-- Topbar -->
+    <header class="topbar">
+      <button onclick="history.back()">←</button>
+      <h5 class="m-0">Favoritos</h5>
+    </header>
+
+    <div class="container my-3">
+      <!-- Produto 1 -->
+      <div class="card p-2 d-flex flex-row align-items-center">
+        <img src="../IMG/processador.png" class="me-3">
+        <div>
+          <h6>Processador intel i5</h6>
+          <p class="m-0 fw-bold">R$ 599,99</p>
+          <button class="btn btn-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#modalProduto1">Ver mais</button>
+        </div>
+      </div>
+
+      <!-- Produto 2 -->
+      <div class="card p-2 d-flex flex-row align-items-center">
+        <img src="../IMG/" class="me-3">
+        <div>
+          <h6>Placa Mãe ASRock B450M Steel Legend</h6>
+          <p class="m-0 fw-bold">R$ 599,99</p>
+          <button class="btn btn-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#modalProduto2">Ver mais</button>
+        </div>
+      </div>
+
+      <!-- Produto 3 -->
+      <div class="card p-2 d-flex flex-row align-items-center">
+        <img src="../IMG/" class="me-3">
+        <div>
+          <h6>Placa de vídeo MLLSE AMD RX 5700 XT 8GB</h6>
+          <p class="m-0 fw-bold">R$ 1.150,90</p>
+          <button class="btn btn-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#modalProduto3">Ver mais</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Produto 1 -->
+    <div class="modal fade" id="modalProduto1" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Processador Intel i5</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <img src="../IMG/processador.png" class="img-fluid mb-4 justify-content-center">
+            <p>Processador Intel Core i5 de última geração, ótimo custo-benefício para jogos e produtividade.</p>
+            <p><strong>Preço: R$ 599,99</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Produto 2 -->
+    <div class="modal fade" id="modalProduto2" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Placa Mãe ASRock B450M Steel Legend</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <img src="../IMG/placa mãe.png" class="img-fluid mb-4">
+            <p>Placa mãe ASRock B450M Steel Legend, DDR4, Socket AM4, M-ATX, ideal para processadores AMD Ryzen.</p>
+            <p><strong>Preço: R$ 599,99</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Produto 3 -->
+    <div class="modal fade" id="modalProduto3" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Placa de vídeo MLLSE AMD RX 5700 XT 8GB</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <img src="../IMG/placa de video.png" class="img-fluid mb-4">
+            <p>Placa de vídeo potente AMD RX 5700 XT, 8GB GDDR6, excelente desempenho para games.</p>
+            <p><strong>Preço: R$ 1.150,90</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  </body>

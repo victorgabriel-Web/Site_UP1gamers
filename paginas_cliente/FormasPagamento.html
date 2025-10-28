@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Lojista</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formas de Pagamento</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/stely.css">
+</head>
+<body>
+
+  <!-- Topbar -->
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <span class="navbar-brand">Formas de Pagamento</span>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+
+    <h2 class="mb-4"> Formas de Pagamento</h2>
+
+    <!-- Tabela -->
+    <table class="table table-hover table-bordered align-middle text-center shadow">
+      <thead class="table-primary">
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Produto</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01</td>
+          <td>João Silva</td>
+          <td>munitor</td>
+          <td><span class="badge bg-warning text-dark">Pendente</span></td>
+          <td>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detalhesModal">Detalhes</button>
+            <button class="btn btn-sm btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#editarModal">Editar</button>
+            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#confirmarModal">Confirmar</button>
+          </td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td>Maria Souza</td>
+          <td>gabinete</td>
+          <td><span class="badge bg-success">Pago</span></td>
+          <td>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detalhesModal">Detalhes</button>
+            <button class="btn btn-sm btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#editarModal">Editar</button>
+            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#confirmarModal">Confirmar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Detalhes -->
+  <div class="modal fade" id="detalhesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Detalhes do Pagamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Cliente:</strong> João Silva</p>
+          <p><strong>Produto:</strong> munitor</p>
+          <p><strong>Status:</strong> Pendente</p>
+          <p><strong>Forma de Pagamento:</strong> PIX</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar -->
+  <div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title text-dark">Editar Pagamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select">
+              <option>Pendente</option>
+              <option>Pago</option>
+              <option>Cancelado</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Forma de Pagamento</label>
+            <select class="form-select">
+              <option>PIX</option>
+              <option>Cartão de Crédito</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-warning text-dark">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar -->
+  <div class="modal fade" id="confirmarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Confirmar Pagamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja confirmar este pagamento?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-success">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tela de Login Gamer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body >
+
+    <div class="container-fluid ">
+      <div class="row min-vh-100">
+
+        <!-- Coluna esquerda - Formulário (75%) -->
+        <div class="col-9 bg-light d-flex justify-content-center align-items-center p-5">
+          <form id="form-login" class="w-100" style="max-width: 400px;">
+          
+            <h2 class="fw-bold text-uppercase mb-4">Login</h2>
+
+            <div class="mb-3">
+              <label for="cpf" class="form-label fw-semibold">CPF:</label>
+              <input type="text" id="cpf" class="form-control rounded-pill" placeholder="Digite seu CPF" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="senha" class="form-label fw-semibold">Senha:</label>
+              <input type="password" id="senha" class="form-control rounded-pill" placeholder="Digite sua senha" required>
+              <small><a href="#" class="text-decoration-none">Esqueci a senha</a></small>
+            </div>
+
+            <div class="d-grid gap-2 mt-3">
+              <button type="submit" class="btn btn-info text-white fw-bold rounded-pill">Entrar</button>
+              <button type="submit" class="btn btn-info text-white fw-bold rounded-pill">Cadastre-se</button>
+              <button type="button" class="btn btn-light border fw-bold rounded-pill d-flex align-items-center justify-content-center">
+                <img src="../IMG/google.png" alt="Google" width="20" class="me-2">
+                Google
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Coluna direita - Logo (25%) -->
+        <div class="col-3  bg-dark d-flex justify-content-center align-items-center p-3">
+          <img src="../img/logodaloja.png" alt="Logo UP1 Gamers" class="img-fluid" style="max-height: 200px;">
+        </div>
+
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../JS/login.js"></script>
+  </body>
+</html>

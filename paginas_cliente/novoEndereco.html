@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+     <link rel="stylesheet" href="../CSS/stely.css">
+</head>
+
+
+<body>
+  <!-- Header -->
+  <header class="topbar">
+    <button class="btn-voltar">←</button>
+    <h1>Novo Endereço</h1>
+  </header>
+
+  <main>
+   
+<div class="container py-4">
+  <h3 class="mb-4">Meus Endereços</h3>
+
+  <!-- Lista de endereços -->
+  <div class="row g-3">
+    <!-- Card Endereço 1 -->
+    <div class="col-md-6">
+      <div class="card endereco-card shadow-sm p-3">
+        <h5 class="card-title">Rua das Flores, 123</h5>
+        <p class="mb-1">São Paulo - SP</p>
+        <p class="mb-2">CEP: 01000-000</p>
+        <button class="btn btn-outline-primary w-100 selecionar-endereco">
+          <i class="bi bi-check-circle"></i> Usar este endereço
+        </button>
+      </div>
+    </div>
+
+    <!-- Card Endereço 2 -->
+    <div class="col-md-6">
+      <div class="card endereco-card shadow-sm p-3">
+        <h5 class="card-title">Av. Paulista, 1000</h5>
+        <p class="mb-1">São Paulo - SP</p>
+        <p class="mb-2">CEP: 01310-000</p>
+        <button class="btn btn-outline-primary w-100 selecionar-endereco">
+          <i class="bi bi-check-circle"></i> Usar este endereço
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão para cadastrar novo endereço -->
+  <div class="text-center mt-4">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
+      <i class="bi bi-plus-circle"></i> Cadastrar Novo Endereço
+    </button>
+  </div>
+</div>
+
+
+<!-- Modal - Novo Endereço -->
+<div class="modal fade" id="modalNovoEndereco" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cadastrar Novo Endereço</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="../PHP/CadastroFrete.php" method="post" >
+          <div class="mb-3">
+            <label class="form-label">Rua</label>
+            <input type="text" class="form-control" name="Rua" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Numero</label>
+            <input type="text" class="form-control" name="Numero" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Cidade</label>
+            <input type="text" class="form-control" name="Cidade" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <input type="text" class="form-control" name="Estado" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">CEP</label>
+            <input type="text" class="form-control" name="CEP" required>
+          </div>
+
+          <!-- Novo campo: Tipo de endereço -->
+          <div class="mb-3">
+            <label class="form-label d-block">Tipo de Endereço</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="tipoEndereco" id="enderecoCasa" value="Casa" checked>
+              <label class="form-check-label" for="enderecoCasa">
+                <i class="bi bi-house-door-fill"></i> Casa
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="tipoEndereco" id="enderecoTrabalho" value="Trabalho">
+              <label class="form-check-label" for="enderecoTrabalho">
+                <i class="bi bi-briefcase-fill"></i> Trabalho
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Salvar Endereço</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // JS simples para destacar o endereço selecionado
+  document.querySelectorAll(".selecionar-endereco").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".endereco-card").forEach(card => card.classList.remove("ativo"));
+      btn.closest(".endereco-card").classList.add("ativo");
+    });
+  });
+</script>
+  </main>
+
+</body>
+
+</html>

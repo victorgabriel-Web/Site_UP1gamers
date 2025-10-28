@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+<link rel="stylesheet" href="../css/stely.css">
+
+
+  </head>
+  <body>
+
+
+ <header class="header fixed-top">
+    <div class="logo">
+        <img src="../IMG/logodaloja.png" alt="logo UP1 gamers" />
+    </div>
+    <div class="search-box">
+        <input type="text" placeholder="Buscar...">
+
+    </div>
+    <div class="icons">
+        <img src="../IMG/chat.png" alt="Chat">
+        <img src="../IMG/grocery-store.png" alt=" Carrinho">
+        <img src="../IMG/user.png" alt=" perfil">
+    </div>
+</header>
+
+<div class="container py-4">
+  <h3 class="mb-4">Finalizar Compra</h3>
+
+  <!-- Endereços -->
+  <h5 class="mb-3">Escolha o Endereço de Entrega</h5>
+  <div class="row g-3" id="listaEnderecos">
+    <div class="col-md-6">
+      <div class="card endereco-card shadow-sm p-3 selecionar-endereco" data-frete="15.00">
+        <h6>Rua das Flores, 123</h6>
+        <p class="mb-1">São Paulo - SP</p>
+        <p class="mb-0">CEP: 01000-000</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card endereco-card shadow-sm p-3 selecionar-endereco" data-frete="20.00">
+        <h6>Av. Paulista, 1000</h6>
+        <p class="mb-1">São Paulo - SP</p>
+        <p class="mb-0">CEP: 01310-000</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="freteInfo" class="alert alert-info mt-3 d-none">
+    Frete: <strong>R$ <span id="valorFrete">0,00</span></strong>
+  </div>
+
+  <!-- Pagamento -->
+  <h5 class="mt-4 mb-3">Forma de Pagamento</h5>
+  <div class="d-flex gap-3">
+    <button class="btn btn-outline-success" id="btnPix">
+      <i class="bi bi-qr-code"></i> Pix
+    </button>
+    <button class="btn btn-outline-primary" id="btnCartao">
+      <i class="bi bi-credit-card"></i> Cartão de Crédito
+    </button>
+  </div>
+
+  <!-- Formulário de cartão -->
+  <div id="formCartao" class="mt-3 d-none">
+    <div class="card p-3 shadow-sm">
+      <form>
+        <div class="mb-3">
+          <label class="form-label">Número do Cartão</label>
+          <input type="text" class="form-control" placeholder="0000 0000 0000 0000">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nome no Cartão</label>
+          <input type="text" class="form-control">
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Validade</label>
+            <input type="text" class="form-control" placeholder="MM/AA">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">CVV</label>
+            <input type="password" class="form-control" placeholder="***">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Resumo da Compra -->
+  <div id="resumoCompra" class="card shadow-sm p-3 mt-4 d-none">
+    <h5>Resumo da Compra</h5>
+    <p>Produto: <strong>R$ 100,00</strong></p>
+    <p>Frete: <strong>R$ <span id="resumoFrete">0,00</span></strong></p>
+    <p>Forma de Pagamento: <strong><span id="resumoPagamento"></span></strong></p>
+    <p>Validade do Pagamento: <strong><span id="validadePagamento"></span></strong></p>
+    <hr>
+    <h5>Total: R$ <span id="totalCompra">100,00</span></h5>
+    <button class="btn btn-success w-100 mt-3" id="btnFinalizar">Finalizar Compra</button>
+  </div>
+</div>
+
+<!-- Modal PIX -->
+<div class="modal fade" id="modalPix" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Pagamento via Pix</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Copie o código Pix abaixo para realizar o pagamento:</p>
+        <textarea class="form-control mb-3" rows="3" readonly>00020126360014BR.GOV.BCB.PIX0114+5511999999995204000053039865405100.005802BR5920NOME DO CLIENTE6009Sao Paulo62070503***6304ABCD</textarea>
+        <button class="btn btn-success w-100">Copiar Código Pix</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let frete = 0;
+  let pagamento = "";
+
+  // Seleção de endereço
+  document.querySelectorAll(".selecionar-endereco").forEach(card => {
+    card.addEventListener("click", () => {
+      document.querySelectorAll(".endereco-card").forEach(c => c.classList.remove("ativo"));
+      card.classList.add("ativo");
+
+      frete = parseFloat(card.getAttribute("data-frete"));
+      document.getElementById("valorFrete").innerText = frete.toFixed(2).replace(".", ",");
+      document.getElementById("freteInfo").classList.remove("d-none");
+    });
+  });
+
+  // Seleção de pagamento
+  document.getElementById("btnPix").addEventListener("click", () => {
+    pagamento = "Pix";
+    document.getElementById("formCartao").classList.add("d-none");
+    mostrarResumo();
+  });
+
+  document.getElementById("btnCartao").addEventListener("click", () => {
+    pagamento = "Cartão de Crédito";
+    document.getElementById("formCartao").classList.remove("d-none");
+    mostrarResumo();
+  });
+
+  // Mostrar resumo
+  function mostrarResumo() {
+    if (frete > 0 && pagamento !== "") {
+      document.getElementById("resumoCompra").classList.remove("d-none");
+      document.getElementById("resumoFrete").innerText = frete.toFixed(2).replace(".", ",");
+      document.getElementById("resumoPagamento").innerText = pagamento;
+      document.getElementById("validadePagamento").innerText = pagamento === "Pix" ? "30 minutos" : "5 dias";
+      document.getElementById("totalCompra").innerText = (100 + frete).toFixed(2).replace(".", ",");
+    }
+  }
+
+  // Finalizar compra
+  document.getElementById("btnFinalizar").addEventListener("click", () => {
+    if (pagamento === "Pix") {
+      new bootstrap.Modal(document.getElementById("modalPix")).show();
+    } else {
+      alert("Compra finalizada com Cartão de Crédito!");
+    }
+  });
+</script>
+
+
+
+
+  </body>
+</html>

@@ -24,10 +24,20 @@ function readImageToBlob(?array $file): ?string {
 // LISTAGEM GET - JSON
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listar"])) {
     try {
-        // Seleciona todos os campos que você quer usar no JS
-        $sqlListar = "SELECT idBanners AS id, descricao, data_validade, link FROM Banners ORDER BY idBanners DESC";
+        // Busca também o campo imagem (BLOB)
+        $sqlListar = "SELECT idBanners AS id, descricao, data_validade, link, imagem 
+                      FROM Banners ORDER BY idBanners DESC";
         $stmtListar = $pdo->query($sqlListar);
         $listar = $stmtListar->fetchAll(PDO::FETCH_ASSOC);
+
+        // Converte imagem BLOB para base64 (data URL)
+        foreach ($listar as &$b) {
+            if (!empty($b["imagem"])) {
+                $b["imagem"] = "data:image/jpeg;base64," . base64_encode($b["imagem"]);
+            } else {
+                $b["imagem"] = null;
+            }
+        }
 
         // Retorna JSON
         header("Content-Type: application/json; charset=utf-8");
@@ -44,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listar"])) {
         exit;
     }
 }
+
 
 /*  ============================ATUALIZAÇÃO=========================== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualizar') {

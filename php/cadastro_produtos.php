@@ -22,6 +22,97 @@ function readImageToBlob(?array $file): ?string
     return $content === false ? null : $content;
 }
 
+
+<?php
+require_once __DIR__ . "/conexao.php";
+require_once __DIR__ . "/funcoes_json.php"; // caso tenha json_ok/json_err definidos
+
+// ===================== LISTAR PRODUTOS POR CATEGORIA ===================== //
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar_por_categoria'])) {
+  // aceita idCategoria, idcategoria ou categoria_id
+  $catId = (int)($_GET['idCategoria'] ?? $_GET['idcategoria'] ?? $_GET['categoria_id'] ?? 0);
+  if ($catId <= 0) {
+    json_err('idCategoria inválido');
+  }
+
+  try {
+    /*
+      Estrutura esperada:
+        - Tabela Produtos
+        - Tabela categorias_produtos (idCategoriaProduto, nome)
+        - Tabela Produtos_e_Categorias_produtos (Produtos_idProdutos, Categorias_produtos_id)
+        - (opcional) Imagem_produtos e Produtos_has_Imagem_produtos
+    */
+
+    $sql = "SELECT
+              p.idProdutos,
+              p.nome,
+              p.descricao,
+              p.quantidade,
+              p.preco,
+              p.preco_promocional,
+              m.nome AS marca,
+              c.nome AS categoria,
+              (
+                SELECT i2.foto
+                FROM Imagem_produtos i2
+                JOIN Produtos_has_Imagem_produtos pi2 
+                  ON pi2.Imagem_produtos_idImagem_produtos = i2.idImagem_produtos
+                WHERE pi2.Produtos_idProdutos = p.idProdutos
+                ORDER BY i2.idImagem_produtos ASC
+                LIMIT 1
+              ) AS imagem,
+              (
+                SELECT i2.texto_alternativo
+                FROM Imagem_produtos i2
+                JOIN Produtos_has_Imagem_produtos pi2 
+                  ON pi2.Imagem_produtos_idImagem_produtos = i2.idImagem_produtos
+                WHERE pi2.Produtos_idProdutos = p.idProdutos
+                ORDER BY i2.idImagem_produtos ASC
+                LIMIT 1
+              ) AS texto_alternativo
+            FROM Produtos p
+            INNER JOIN Produtos_e_Categorias_produtos pc 
+              ON pc.Produtos_idProdutos = p.idProdutos
+            INNER JOIN categorias_produtos c 
+              ON c.idCategoriaProduto = pc.Categorias_produtos_id
+            LEFT JOIN Marcas m 
+              ON m.idMarcas = p.Marcas_idMarcas
+            WHERE pc.Categorias_produtos_id = :catId
+            ORDER BY p.idProdutos DESC";
+
+    $st = $pdo->prepare($sql);
+    $st->bindValue(':catId', $catId, PDO::PARAM_INT);
+    $st->execute();
+    $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+
+    $produtos = array_map(function ($r) {
+      return [
+        'idProdutos'        => (int)$r['idProdutos'],
+        'nome'              => $r['nome'],
+        'descricao'         => $r['descricao'],
+        'quantidade'        => (int)$r['quantidade'],
+        'preco'             => (float)$r['preco'],
+        'preco_promocional' => isset($r['preco_promocional']) ? (float)$r['preco_promocional'] : null,
+        'marca'             => $r['marca'] ?? null,
+        'categoria'         => $r['categoria'] ?? null,
+        // IMPORTANTE: converte BLOB para base64
+        'imagem'            => $r['imagem'] ? base64_encode($r['imagem']) : null,
+        'texto_alternativo' => $r['texto_alternativo'] ?? null
+      ];
+    }, $rows);
+
+    json_ok(['count' => count($produtos), 'produtos' => $produtos]);
+  } catch (Throwable $e) {
+    json_err('Falha ao listar produtos por categoria: ' . $e->getMessage(), 500);
+  }
+}
+
+// fallback
+json_err('Requisição inválida', 405);
+
+
+
 /*  ============================ATUALIZAÇÃO=========================== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualizar') {
   try {

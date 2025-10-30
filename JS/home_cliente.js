@@ -318,6 +318,7 @@
     }
   }
 
+  
   // --------- Carregamento de produtos ---------
   async function carregarProdutosAll() {
     const status = $("#produtos-status");
@@ -393,6 +394,8 @@
     });
   }
 
+
+  
   // --------- Boot ---------
   document.addEventListener("DOMContentLoaded", async () => {
     state.activeCat = "";              // todas
@@ -401,3 +404,4 @@
     wireEvents();
   });
 })();
+

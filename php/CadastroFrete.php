@@ -1,218 +1,126 @@
 <?php
+require_once __DIR__ . "/conexao.php";
 
-// Conectando este arquivo ao banco de dados
-require_once __DIR__ ."/conexao.php";
-
-// função para capturar os dados passados de uma página a outra
-function redirecWith($url,$params=[]){
-// verifica se os os paramentros não vieram vazios
- if(!empty($params)){
-// separar os parametros em espaços diferentes
-$qs= http_build_query($params);
-$sep = (strpos($url,'?') === false) ? '?': '&';
-$url .= $sep . $qs;
-}
-// joga a url para o cabeçalho no navegador
-header("Location:  $url");
-// fecha o script
-exit;
+/* ===========================================================
+   FUNÇÃO DE REDIRECIONAMENTO
+=========================================================== */
+function redirecWith($url, $params = [])
+{
+    if (!empty($params)) {
+        $qs  = http_build_query($params);
+        $sep = (strpos($url, '?') === false) ? '?' : '&';
+        $url .= $sep . $qs;
+    }
+    header("Location: $url");
+    exit;
 }
 
-
+/* ===========================================================
+   LISTAR FRETES
+=========================================================== */
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listar"])) {
-  try {
-    // Comando de listagem: busca fretes com campos renomeados/ordenados
-    $sqllistar = "SELECT idFretes AS id, bairro, valor, transportadora
-                  FROM Fretes
-                  ORDER BY bairro, valor";
+    try {
+        $sql = "SELECT idFretes AS id, bairro, valor, transportadora
+                FROM Fretes
+                ORDER BY bairro, valor";
 
-    // Executa a query diretamente (sem parâmetros) e obtém um PDOStatement
-    $stmtlistar = $pdo->query($sqllistar);
-    // Converte o resultado em array associativo
-    $listar = $stmtlistar->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $pdo->query($sql);
+        $fretes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Define o formato de saída: "json" ou padrão "option" (HTML)
-    $formato = isset($_GET["format"]) ? strtolower($_GET["format"]) : "option";
+        $formato = strtolower($_GET["format"] ?? "option");
 
-    if ($formato === "json") {
-      // (Opcional) normaliza tipos: id => int, valor => float
-      $saida = array_map(function ($item) {
-        return [
-          "id"            => (int)$item["id"],
-          "bairro"        => $item["bairro"],
-          "valor"         => (float)$item["valor"],
-          "transportadora"=> $item["transportadora"],
-        ];
-      }, $listar);
+        if ($formato === "json") {
+            $saida = array_map(function ($item) {
+                return [
+                    "id"            => (int)$item["id"],
+                    "bairro"        => $item["bairro"],
+                    "valor"         => (float)$item["valor"],
+                    "transportadora"=> $item["transportadora"]
+                ];
+            }, $fretes);
 
-      // Retorna JSON com status OK
-      header("Content-Type: application/json; charset=utf-8");
-      echo json_encode(["ok" => true, "fretes" => $saida], JSON_UNESCAPED_UNICODE);
-      exit;
+            header("Content-Type: application/json; charset=utf-8");
+            echo json_encode(["ok" => true, "fretes" => $saida], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        // Saída HTML (para SELECT)
+        header("Content-Type: text/html; charset=utf-8");
+        foreach ($fretes as $f) {
+            $id = (int)$f["id"];
+            $bairro = htmlspecialchars($f["bairro"], ENT_QUOTES, "UTF-8");
+            $transp = $f["transportadora"] ? " (" . htmlspecialchars($f["transportadora"], ENT_QUOTES, "UTF-8") . ")" : "";
+            $valorFmt = number_format((float)$f["valor"], 2, ",", ".");
+            echo "<option value=\"{$id}\">{$bairro}{$transp} - R$ {$valorFmt}</option>\n";
+        }
+        exit;
+    } catch (Throwable $e) {
+        if (isset($_GET["format"]) && strtolower($_GET["format"]) === "json") {
+            header("Content-Type: application/json; charset=utf-8", true, 500);
+            echo json_encode(["ok" => false, "error" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        } else {
+            header("Content-Type: text/html; charset=utf-8", true, 500);
+            echo "<option disabled>Erro ao carregar fretes</option>";
+        }
+        exit;
     }
-
-    // RETORNO PADRÃO (options): ideal para preencher <select>
-    header("Content-Type: text/html; charset=utf-8");
-    foreach ($listar as $lista) {
-      // Converte id para inteiro
-      $id     = (int)$lista["id"];
-      // Escapa bairro (evita XSS)
-      $bairro = htmlspecialchars($lista["bairro"], ENT_QUOTES, "UTF-8");
-      // Se houver transportadora, exibe entre parênteses; também escapada
-      $transp = $lista["transportadora"] !== null && $lista["transportadora"] !== ""
-                  ? " (" . htmlspecialchars($lista["transportadora"], ENT_QUOTES, "UTF-8") . ")"
-                  : "";
-      // Formata valor no padrão pt-BR (duas casas, vírgula decimal)
-      $valorFmt = number_format((float)$lista["valor"], 2, ",", ".");
-      // Monta o rótulo da option: "Bairro (Transportadora) - R$ 0,00"
-      $label = "{$bairro}{$transp} - R$ {$valorFmt}";
-      // Imprime a option com value = id
-      echo "<option value=\"{$id}\">{$label}</option>\n";
-    }
-    exit;
-
-  } catch (Throwable $e) {
-    // Erro na listagem: retorna JSON (se solicitado) ou HTML simples com status 500
-    if (isset($_GET["format"]) && strtolower($_GET["format"]) === "json") {
-      header("Content-Type: application/json; charset=utf-8", true, 500);
-      echo json_encode(
-        ["ok" => false, "error" => "Erro ao listar fretes", "detail" => $e->getMessage()],
-        JSON_UNESCAPED_UNICODE
-      );
-    } else {
-      header("Content-Type: text/html; charset=utf-8", true, 500);
-      echo "<option disabled>Erro ao carregar fretes</option>";
-    }
-    exit;
-  }
 }
 
+/* ===========================================================
+   CADASTRAR FRETE
+=========================================================== */
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["acao"] ?? "") === "cadastrar") {
+    try {
+        $bairro = trim($_POST["bairro"] ?? "");
+        $valor = (float)($_POST["valor"] ?? 0);
+        $transportadora = trim($_POST["transportadora"] ?? "");
 
-/*  ============================ATUALIZAÇÃO=========================== */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualizar') {
-  try {
-    $id        = (int)($_POST['id'] ?? 0);
-    $descricao = trim($_POST['descricao'] ?? '');
-    $dataVal   = trim($_POST['data'] ?? '');
-    $link      = trim($_POST['link'] ?? '');
-    $categoria = $_POST['categoriab'] ?? null;
-    $categoria = ($categoria === '' || $categoria === null) ? null : (int)$categoria;
+        // Validação
+        $erros = [];
+        if ($bairro === "" || $valor <= 0) {
+            $erros[] = "Preencha todos os campos obrigatórios.";
+        }
 
-    if ($id <= 0) {
-      redirect_with('../PAGINAS_LOGISTA/banners_logista.html', ['erro_banner' => 'ID inválido para edição.']);
-    }
+        if ($erros) {
+            redirecWith("../paginas_logista/frete_pagamento_logista.html", ["erro" => implode(" ", $erros)]);
+        }
 
-    // Lê (se houver) nova imagem
-    $imgBlob = read_image_to_blob($_FILES['foto'] ?? null);
+        $sql = "INSERT INTO Fretes (bairro, valor, transportadora)
+                VALUES (:bairro, :valor, :transportadora)";
+        $stmt = $pdo->prepare($sql);
+        $ok = $stmt->execute([
+            ":bairro"        => $bairro,
+            ":valor"         => $valor,
+            ":transportadora"=> $transportadora
+        ]);
 
-    // validações mínimas (iguais ao cadastro)
-    $erros = [];
-    if ($descricao === '') { $erros[] = 'Informe a descrição.'; }
-    elseif (mb_strlen($descricao) > 45) { $erros[] = 'Descrição deve ter no máximo 45 caracteres.'; }
-    $dt = DateTime::createFromFormat('Y-m-d', $dataVal);
-    if (!($dt && $dt->format('Y-m-d') === $dataVal)) { $erros[] = 'Data de validade inválida (use YYYY-MM-DD).'; }74
-    if ($link !== '' && mb_strlen($link) > 45) { $erros[] = 'Link deve ter no máximo 45 caracteres.'; }
-    if ($erros) {
-      redirect_with('../PAGINAS_LOGISTA/banners_logista.html', ['erro_banner' => implode(' ', $erros)]);
+        if ($ok) {
+            redirecWith("../paginas_logista/frete_pagamento_logista.html", ["cadastro" => "ok"]);
+        } else {
+            redirecWith("../paginas_logista/frete_pagamento_logista.html", ["erro" => "Erro ao cadastrar."]);
+        }
+    } catch (Throwable $e) {
+        redirecWith("../paginas_logista/frete_pagamento_logista.html", ["erro" => "Erro no banco: " . $e->getMessage()]);
     }
-    
-    // Monta UPDATE dinâmico (atualiza imagem só se uma nova foi enviada)
-    $setSql = "descricao = :desc, data_validade = :dt, link = :lnk, CategoriasProdutos_id = :cat";
-    if ($imgBlob !== null) {
-      $setSql = "imagem = :img, " . $setSql;
-    }
-    $sql = "UPDATE Banners
-              SET $setSql
-            WHERE idBanners = :id";
-
-    $st = $pdo->prepare($sql);
-    if ($imgBlob !== null) {
-      $st->bindValue(':img', $imgBlob, PDO::PARAM_LOB);
-    }
-    $st->bindValue(':desc', $descricao, PDO::PARAM_STR);
-    $st->bindValue(':dt',   $dataVal,   PDO::PARAM_STR);
-    if ($link === '') {
-      $st->bindValue(':lnk', null, PDO::PARAM_NULL);
-    } else {
-      $st->bindValue(':lnk', $link, PDO::PARAM_STR);
-    }
-    if ($categoria === null) {
-      $st->bindValue(':cat', null, PDO::PARAM_NULL);
-    } else {
-      $st->bindValue(':cat', $categoria, PDO::PARAM_INT);
-    }
-    $st->bindValue(':id', $id, PDO::PARAM_INT);
-    $st->execute();
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['editar_banner' => 'ok']);
-  } catch (Throwable $e) {
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'Erro ao editar: ' . $e->getMessage()]);
-  }
 }
 
+/* ===========================================================
+   EXCLUIR FRETE
+=========================================================== */
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["acao"] ?? "") === "excluir") {
+    try {
+        $id = (int)($_POST["id"] ?? 0);
+        if ($id <= 0) {
+            redirecWith("../paginas_logista/frete_pagamento_logista.html", ["erro" => "ID inválido."]);
+        }
 
-/*  ============================EXCLUSÃO=========================== */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'excluir') {
-  try {
-    $id = (int)($_POST['id'] ?? 0);
-    if ($id <= 0) {
-      redirect_with('../PAGINAS_LOGISTA/banners_logista.html', ['erro_banner' => 'ID inválido para exclusão.']);
+        $stmt = $pdo->prepare("DELETE FROM Fretes WHERE idFretes = :id");
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        redirecWith("../paginas_logista/frete_pagamento_logista.html", ["excluir" => "ok"]);
+    } catch (Throwable $e) {
+        redirecWith("../paginas_logista/frete_pagamento_logista.html", ["erro" => "Erro ao excluir: " . $e->getMessage()]);
     }
-    $st = $pdo->prepare("DELETE FROM Banners WHERE idBanners = :id");
-    $st->bindValue(':id', $id, PDO::PARAM_INT);
-    $st->execute();
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['excluir_banner' => 'ok']);
-  } catch (Throwable $e) {
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'Erro ao excluir: ' . $e->getMessage()]);
-  }
 }
-
-
-
-
-try{
-    // SE O METODO DE ENVIO FOR DIFERENTE DO POST
-    if($_SERVER["REQUEST_METHOD"] !== "POST"){
-        //VOLTAR À TELA DE CADASTRO E EXIBIR ERRO
-        redirecWith("../paginas_logista/frete_pagamento_logista.html",
-           ["erro"=> "Metodo inválido"]);
-    }
-    // variaveis
-    $bairro = $_POST["bairro"];
-    $valor = (double)$_POST["valor"];
-    $transportadora = $_POST["transportadora"];
-
-    // validação
-    $erros_validacao=[];
-    //se qualquer campo for vazio
-    if($bairro === "" || $valor ==="" ){
-        $erros_validacao[]="Preencha todos os campos";
-    }
-
-/* Inserir o frete no banco de dados */
-    $sql ="INSERT INTO 
-    Fretes (bairro,valor,transportadora)
-     Values (:bairro,:valor,:transportadora)";
-     // executando o comando no banco de dados
-     $inserir = $pdo->prepare($sql)->execute([
-        ":bairro" => $bairro,
-        ":valor"=> $valor,
-        ":transportadora"=> $transportadora,     
-     ]);
-
-     /* Verificando se foi cadastrado no banco de dados */
-     if($inserir){
-        redirecWith("../paginas_logista/frete_pagamento_logista.html",
-        ["cadastro" => "ok"]) ;
-     }else{
-        redirecWith("../paginas_logista/frete_pagamento_logista.html"
-        ,["erro" =>"Erro ao cadastrar no banco
-         de dados"]);
-     }
-}catch(\Exception $e){
-redirecWith("../paginas_logista/frete_pagamento_logista.html",
-      ["erro" => "Erro no banco de dados: "
-      .$e->getMessage()]);
-}
-
-
 ?>

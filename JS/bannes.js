@@ -1,76 +1,170 @@
-function listarcategorias(nomeid){
-(async () => {
-    // selecionando o elemento html da tela de cadastro de produtos
-    const sel = document.querySelector(nomeid);
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ========== PRÉVIA DA IMAGEM ========== */
+  const input = document.querySelector('input[name="imagemb"]');
+  const previewBox = document.querySelector(".banner-thumb");
+
+  if (input && previewBox) {
+    input.addEventListener("change", () => {
+      const file = input.files && input.files[0];
+      if (!file) {
+        previewBox.innerHTML = '<span class="text-muted">Prévia</span>';
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        previewBox.innerHTML = '<span class="text-danger small">Arquivo inválido</span>';
+        input.value = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewBox.innerHTML = `<img src="${e.target.result}" alt="Prévia"
+          style="max-width:100%;max-height:100%;object-fit:cover;border-radius:8px;">`;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ========== LISTAR CATEGORIAS ========== */
+  async function listarcategorias(selector) {
+    const sel = document.querySelector(selector);
+    if (!sel) return;
     try {
-        // criando a váriavel que guardar os dados vindo do php, que estão no metodo de listar
-        const r = await fetch("../PHP/cadastro_categoria.php?listar=1");
-        // se o retorno do php vier false, significa que não foi possivel listar os dados
-        if (!r.ok) throw new Error("Falha ao listar categorias!");
-        /* se vier dados do php, ele joga as 
-        informações dentro do campo html em formato de texto
-        innerHTML- inserir dados em elementos html
-        */
-        sel.innerHTML = await r.text();
-    } catch (e) {
-        // se dê erro na listagem, aparece Erro ao carregar dentro do campo html
-        sel.innerHTML = "<option disable>Erro ao carregar</option>"
+      const r = await fetch("../PHP/cadastro_categoria.php?listar=1");
+      if (!r.ok) throw new Error("Erro ao listar categorias");
+      sel.innerHTML = await r.text();
+    } catch {
+      sel.innerHTML = "<option disabled>Erro ao carregar</option>";
     }
-})();
-}
+  }
 
-// função de listar banners em tabela
-function listarBanners(tabelaBt) {
-  document.addEventListener('DOMContentLoaded', () => {
-    const tbody = document.getElementById(tabelaBt);
-    const url   = '../php/cadastro_bannes.php?listar=1&format=json';
+  /* ========== LISTAR BANNERS ========== */
+  function listarBanners(tabelaId) {
+    const tbody = document.getElementById(tabelaId);
+    if (!tbody) return;
+    let byId = new Map();
 
-    // Função para escapar caracteres especiais
-    const esc = s => (s||'').replace(/[&<>"']/g, c => ({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    const esc = s => (s || '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
 
-    // Formata data para DD/MM/AAAA
-    const formatData = d => {
-      if (!d) return '-';
-      const dt = new Date(d);
-      return dt.toLocaleDateString('pt-BR');
+    const dtbr = iso => {
+      if (!iso) return '-';
+      const [y, m, d] = String(iso).split('-');
+      return (y && m && d) ? `${d}/${m}/${y}` : '-';
     };
 
-    
-    // Monta cada linha da tabela
-    const row = b => `
-      <tr>
-        <td>${Number(b.id) || ''}</td>
-        <td>${esc(b.nome || '-')}</td>
-        <td>${formatData(b.data_validade)}</td>
-        <td>${esc(b.link || '-')}</td>
-        <td class="text-end">
-          <button class="btn btn-sm btn-warning" data-id="${b.id}">
-            <i class="bi bi-pencil"></i> Editar
-          </button>
-          <button class="btn btn-sm btn-danger" data-id="${b.id}">
-            <i class="bi bi-trash"></i> Excluir
-          </button>
-        </td>
-      </tr>`;
+    const ph = () =>
+      'data:image/svg+xml;base64,' + btoa(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64">
+          <rect width="100%" height="100%" fill="#eee"/>
+          <text x="50%" y="50%" text-anchor="middle" font-size="10" fill="#999">SEM IMAGEM</text>
+        </svg>`
+      );
 
-    // Requisição para o PHP
-    fetch(url, { cache: 'no-store' })
+    fetch('../PHP/cadastro_bannes.php?listar=1', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
         if (!d.ok) throw new Error(d.error || 'Erro ao listar banners');
-        const banners = d.banners || [];
-        tbody.innerHTML = banners.length
-          ? banners.map(row).join('')
-          : `<tr><td colspan="5" class="text-center text-muted">Nenhum banner cadastrado.</td></tr>`;
+        const arr = d.banners || [];
+        byId = new Map();
+        tbody.innerHTML = arr.length
+          ? arr.map(b => {
+              byId.set(String(b.id), b);
+              let src = ph();
+              if (b.imagem) {
+                if (b.imagem.startsWith("data:image")) src = b.imagem;
+                else if (b.imagem.startsWith("../") || b.imagem.startsWith("/"))
+                  src = b.imagem;
+                else src = `../IMG/${b.imagem}`;
+              }
+              return `
+                <tr>
+                  <td>${b.id}</td>
+                  <td><img src="${src}" style="width:96px;height:64px;object-fit:cover;border-radius:6px"></td>
+                  <td>${esc(b.descricao || '-')}</td>
+                  <td>${dtbr(b.data_validade)}</td>
+                  <td>${b.link ? `<a href="${esc(b.link)}" target="_blank">Abrir</a>` : '-'}</td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-info" data-id="${b.id}">Selecionar</button>
+                    <button class="btn btn-sm btn-danger" data-id="${b.id}">Excluir</button>
+                  </td>
+                </tr>`;
+            }).join('')
+          : `<tr><td colspan="6" class="text-center text-muted">Nenhum banner cadastrado.</td></tr>`;
+
+        /* ==== EVENTOS DE BOTÕES ==== */
+        tbody.onclick = async ev => {
+          const btn = ev.target.closest('button');
+          if (!btn) return;
+          const id = btn.dataset.id;
+          const banner = byId.get(String(id));
+          if (!banner) return alert('Banner não encontrado.');
+
+          // --- SELECIONAR ---
+          if (btn.classList.contains('btn-info')) {
+            preencherFormBanner(banner);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+
+          // --- EXCLUIR ---
+          if (btn.classList.contains('btn-danger')) {
+            if (!confirm('Deseja realmente excluir este banner?')) return;
+            const fd = new FormData();
+            fd.append('acao', 'excluir');
+            fd.append('id', id);
+            const r = await fetch('../PHP/cadastro_bannes.php', { method: 'POST', body: fd });
+            if (!r.ok) return alert('Falha ao excluir');
+            alert('Banner excluído com sucesso!');
+            listarBanners(tabelaId);
+            limparForm();
+          }
+        };
       })
       .catch(err => {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Falha ao carregar: ${esc(err.message)}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Erro: ${esc(err.message)}</td></tr>`;
       });
-  });
-}
+  }
 
-// Chama a função para listar banners
-listarBanners("tbBanners");
-listarcategorias('#categorialistar');
+  /* ========== PREENCHER FORM PARA EDIÇÃO ========== */
+  function preencherFormBanner(b) {
+    const form = document.getElementById('formBanner');
+    if (!form) return;
+
+    form.querySelector('input[name="descricao"]').value = b.descricao || '';
+    form.querySelector('input[name="data_validade"]').value = b.data_validade || '';
+    form.querySelector('input[name="link"]').value = b.link || '';
+    form.querySelector('select[name="categoria"]').value = b.categoria_id ?? '';
+    form.querySelector('input[name="id"]').value = b.id;
+
+    const imgPreview = document.querySelector('.banner-thumb');
+    if (b.imagem && imgPreview) {
+      let src = b.imagem.startsWith("data:image") ? b.imagem
+        : (b.imagem.startsWith("../") ? b.imagem : `../IMG/${b.imagem}`);
+      imgPreview.innerHTML = `<img src="${src}" style="max-width:100%;max-height:100%;object-fit:cover;border-radius:8px;">`;
+    }
+
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Salvar alterações';
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-success');
+  }
+
+  /* ========== LIMPAR FORM ========== */
+  function limparForm() {
+    const form = document.getElementById('formBanner');
+    form.reset();
+    const preview = document.querySelector('.banner-thumb');
+    if (preview) preview.innerHTML = '<span class="text-muted">Prévia</span>';
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Cadastrar';
+    btn.classList.remove('btn-success');
+    btn.classList.add('btn-primary');
+  }
+
+  document.getElementById('formBanner').addEventListener('reset', limparForm);
+
+  // Inicialização
+  listarcategorias("#categorialistar");
+  listarBanners("tabelaBanners");
+});

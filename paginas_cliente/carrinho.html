@@ -1,151 +1,66 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Carrinho</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrinho</title>
 
-    <link rel="stylesheet" href="../css/stely.css">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/stely.css">
 </head>
 
 <body>
 
+  <main>
 
-    
+    <!-- Topo -->
+    <div class="topbar d-flex align-items-center justify-content-between p-3 bg-light border-bottom">
+      <a href="index.html" class="d-flex align-items-center text-decoration-none">
+        <img src="../IMG/logodaloja.png" alt="Logo da loja" style="height: 40px;">
+      </a>
+      <div class="fw-bold fs-5"><i class="bi bi-cart me-2"></i> Carrinho</div>
+    </div>
 
-    <main>
+    <!-- Lista de Produtos -->
+    <div id="cart-items" class="container my-4">
 
-        <!-- Topo -->
-        <div class="topbar">
-            <a href="index.html">
-                <img src="../IMG/" alt="logo">
-            </a>
-           
-            <i class="bi  me-2"></i> Carrinho 
+      <!-- Produto 1 -->
+      <div class="cart-item d-flex align-items-center justify-content-between border rounded p-2 mb-3" data-price="599.99">
+        <div class="d-flex align-items-center">
+          <img src="../IMG/processador.png" alt="Processador Intel i5" style="width: 80px; height: 80px; object-fit: cover;">
+          <div class="item-info ms-3">
+            <h6 class="mb-1">Processador Intel i5</h6>
+            <p class="mb-0">R$ 599,99</p>
+          </div>
         </div>
-
-        <!-- Lista de Produtos -->
-        <div id="cart-items">
-
-            <!-- Produto 1 -->
-            <div class="cart-item" data-price="599.99">
-                <img src="../IMG/processador.png"
-                    alt="Intel i5">
-                <div class="item-info">
-                    <h6>Processador Intel i5</h6>
-                    <p>R$ 599,99</p>
-                </div>
-                <i class="bi bi-trash delete-btn" onclick="removeItem(this)"></i>
-                <input type="checkbox" class="select-item" onchange="updateTotal()">
-            </div>
-
-            <!-- Produto 2 -->
-            <div class="cart-item" data-price="1150.90">
-                <img src="../IMG/placa de video.png" alt="Placa de vídeo">
-                <div class="item-info">
-                    <h6>Placa de Vídeo RX 5700 XT 8GB</h6>
-                    <p>R$ 1.150,90</p>
-                </div>
-                <i class="bi bi-trash delete-btn" onclick="removeItem(this)"></i>
-                <input type="checkbox" class="select-item" onchange="updateTotal()">
-            </div>
-
-             <!-- Produto  -->
-            <div class="cart-item" data-price="99.90">
-                <img src="../IMG/Headset Gamer Sem fio HyperX.png" alt="Placa de vídeo">
-                <div class="item-info">
-                    <h6>Headset Gamer Sem fio HyperX</h6>
-                    <p>R$ 99,90 </p>
-                </div>
-                <i class="bi bi-trash delete-btn" onclick="removeItem(this)"></i>
-                <input type="checkbox" class="select-item" onchange="updateTotal()">
-            </div>
-         
+        <div class="d-flex align-items-center gap-3">
+          <input type="checkbox" class="select-item form-check-input" onchange="updateTotal()">
+          <i class="bi bi-trash delete-btn text-danger fs-5" style="cursor: pointer;" onclick="removeItem(this)"></i>
         </div>
+      </div>
 
-        <!-- Rodapé -->
-        <div class="finalizar-compra">
-            <div>
-                <input type="checkbox" id="select-all" onclick="toggleAll()"> tudo
-            </div>
-            <button class="btn-continue" id="btn-continue" onclick="continueCheckout()">
-                continuar
-            </button>
+      <!-- Produto 2 -->
+      <div class="cart-item d-flex align-items-center justify-content-between border rounded p-2 mb-3" data-price="1150.90">
+        <div class="d-flex align-items-center">
+          <img src="../IMG/placa de video.png" alt="Placa de Vídeo RX 5700 XT" style="width: 80px; height: 80px; object-fit: cover;">
+          <div class="item-info ms-3">
+            <h6 class="mb-1">Placa de Vídeo RX 5700 XT 8GB</h6>
+            <p class="mb-0">R$ 1.150,90</p>
+          </div>
         </div>
-
-        <!-- Script -->
-        <script>
-            function removeItem(el) {
-                el.parentElement.remove();
-                updateTotal();
-            }
-
-            function toggleAll() {
-                let checkboxes = document.querySelectorAll(".select-item");
-                let selectAll = document.getElementById("select-all").checked;
-                checkboxes.forEach(cb => cb.checked = selectAll);
-                updateTotal();
-            }
-
-            function updateTotal() {
-                let total = 0;
-                let selected = document.querySelectorAll(".select-item:checked");
-                selected.forEach(cb => {
-                    total += parseFloat(cb.parentElement.getAttribute("data-price"));
-                });
-
-                let btn = document.getElementById("btn-continue");
-                btn.innerText = "continuar (" +
-                    (total > 0 ? "R$ " + total.toFixed(2).replace(".", ",") : "") + ")";
-            }
-
-            function continueCheckout() {
-                let selected = document.querySelectorAll(".select-item:checked");
-                if (selected.length === 0) {
-                    alert("Selecione pelo menos 1 produto para continuar!");
-                } else {
-                    alert("Você selecionou " + selected.length + " produto(s). Total: R$ " +
-                        document.getElementById("btn-continue").innerText.split("R$ ")[1]);
-                }
-            }
-        </script>
-
-    </main>
-
-
-
-
-    <footer class="footer fixed-bottom">
-        <!--Área do rodapé que ficará os textos do lado esquerdo-->
-        <div class="footer-texto">
-            <p>Desenvolvido por victor gaabriel Pereira</p>
+        <div class="d-flex align-items-center gap-3">
+          <input type="checkbox" class="select-item form-check-input" onchange="updateTotal()">
+          <i class="bi bi-trash delete-btn text-danger fs-5" style="cursor: pointer;" onclick="removeItem(this)"></i>
         </div>
+      </div>
 
-        <!--Área Direita com as redes sociais-->
-        <div class="footer-direito">
-            <p>Conheça Nossas Redes Sociais</p>
-            <div class="icons-sociais">
-                <a href="">
-                    <img src="../IMG/social.png" alt="Instagram">
-                </a>
-                <a href="">
-                    <img src="../IMG/tik-tok.png" alt="Tiktok">
-                    <a href="">
-                        <img src="../IMG/communication.png" alt="facebook">
-                    </a>
-
-                    <img src="../IMG/youtube.png" alt="youtube">
-                </a>
-
-    </footer>
-
-
-</body>
-
-</html>
+      <!-- Produto 3 -->
+      <div class="cart-item d-flex align-items-center justify-content-between border ro

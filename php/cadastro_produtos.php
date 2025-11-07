@@ -23,9 +23,8 @@ function readImageToBlob(?array $file): ?string
 }
 
 
-<?php
-require_once __DIR__ . "/conexao.php";
-require_once __DIR__ . "/funcoes_json.php"; // caso tenha json_ok/json_err definidos
+
+
 
 // ===================== LISTAR PRODUTOS POR CATEGORIA ===================== //
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar_por_categoria'])) {
@@ -109,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar_por_categoria'])
 }
 
 // fallback
-json_err('Requisição inválida', 405);
+
 
 
 

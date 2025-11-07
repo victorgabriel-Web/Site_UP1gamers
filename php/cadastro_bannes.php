@@ -19,7 +19,11 @@ function readImageToBlob(?array $file): ?string {
     return $bin === false ? null : $bin;
 }
 
-
+function json_response($data, $status = 200) {
+    header("Content-Type: application/json; charset=utf-8", true, $status);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 // LISTAGEM GET - JSON
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listar"])) {
@@ -56,75 +60,57 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listar"])) {
 }
 
 
-/*  ============================ATUALIZAÇÃO=========================== */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'atualizar') {
-  try {
-    $id        = (int)($_POST['id'] ?? 0);
-    $descricao = trim($_POST['descricao'] ?? '');
-    $dataVal   = trim($_POST['data_validade'] ?? '');
-    $link      = trim($_POST['link'] ?? '');
-    $categoria = $_POST['categorialistar'] ?? null;
-    $categoria = ($categoria === '' || $categoria === null) ? null : (int)$categoria;
+/* ====================== EDITAR (POST) ====================== */
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["acao"] ?? "") === "editar") {
+    try {
+        $id        = (int)($_POST["id"] ?? 0);
+        $descricao = trim($_POST["descricao"] ?? "");
+        $dataVal   = trim($_POST["data_validade"] ?? "");
+        $link      = trim($_POST["link"] ?? "");
+        $categoria = isset($_POST["categoria"]) && is_numeric($_POST["categoria"])
+            ? (int)$_POST["categoria"] : null;
+        $imagem    = readImageToBlob($_FILES["imagemb"] ?? null);
 
-    if ($id <= 0) {
-      redirect_with('../PAGINAS_LOGISTA/banners_logista.html', ['erro_banner' => 'ID inválido para edição.']);
-    }
-    // Lê (se houver) nova imagem
-    $imgBlob = read_image_to_blob($_FILES['foto'] ?? null);
-    // validações mínimas (iguais ao cadastro)
-    $erros = [];
-    if ($descricao === '') { $erros[] = 'Informe a descrição.'; }
-    elseif (mb_strlen($descricao) > 45) { $erros[] = 'Descrição deve ter no máximo 45 caracteres.'; }
-    $dt = DateTime::createFromFormat('Y-m-d', $dataVal);
-    if (!($dt && $dt->format('Y-m-d') === $dataVal)) { $erros[] = 'Data de validade inválida (use YYYY-MM-DD).'; }
-    if ($link !== '' && mb_strlen($link) > 45) { $erros[] = 'Link deve ter no máximo 45 caracteres.'; }
-    if ($erros) {
-      redirect_with('../PAGINAS_LOGISTA/banners_logista.html', ['erro_banner' => implode(' ', $erros)]);
-    }
+        if ($id <= 0) json_response(["ok" => false, "error" => "ID inválido."]);
+        if ($descricao === "" || $dataVal === "") {
+            json_response(["ok" => false, "error" => "Campos obrigatórios não preenchidos."]);
+        }
 
-    // Monta UPDATE dinâmico (atualiza imagem só se uma nova foi enviada)
-    $setSql = "descricao = :desc, data_validade = :dt, link = :lnk, CategoriasProdutos_id = :cat";
-    if ($imgBlob !== null) {
-      $setSql = "imagem = :img, " . $setSql;
-    }
+        $sql = "UPDATE Banners 
+                SET descricao = :desc, data_validade = :dt, link = :lnk, CategoriasProdutos_id = :cat"
+              . ($imagem ? ", imagem = :img" : "")
+              . " WHERE idBanners = :id";
+        $st = $pdo->prepare($sql);
+        $st->bindValue(":desc", $descricao);
+        $st->bindValue(":dt", $dataVal);
+        $st->bindValue(":lnk", $link);
+        $st->bindValue(":cat", $categoria ?: null, $categoria ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        if ($imagem) $st->bindValue(":img", $imagem, PDO::PARAM_LOB);
+        $st->bindValue(":id", $id, PDO::PARAM_INT);
+        $st->execute();
 
-    $sql = "UPDATE Banners SET $setSql WHERE idBanners = :id";
-
-    $st = $pdo->prepare($sql);
-    if ($imgBlob !== null) {
-      $st->bindValue(':img', $imgBlob, PDO::PARAM_LOB);
+        json_response(["ok" => true, "msg" => "Banner atualizado com sucesso!"]);
+    } catch (Throwable $e) {
+        json_response(["ok" => false, "error" => "Erro ao editar: " . $e->getMessage()], 500);
     }
-    if ($categoria === null) {
-      $st->bindValue(':idCategoria', null, PDO::PARAM_NULL);
-    } else {
-      $st->bindValue(':idCategoria', $categoria, PDO::PARAM_INT);
-    }
-    $st->bindValue(':id', $id, PDO::PARAM_INT);
-    $st->execute();
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['editar_banner' => 'ok']);
-  } catch (Throwable $e) {
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'Erro ao editar: ' . $e->getMessage()]);
-  }
 }
 
-/*  ============================EXCLUSÃO=========================== */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'excluir') {
-  try {
-    $id = (int)($_POST['id'] ?? 0);
-    if ($id <= 0) {
-      redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'ID inválido para exclusão.']);
+/* ====================== EXCLUIR (POST) ====================== */
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["acao"] ?? "") === "excluir") {
+    try {
+        $id = (int)($_POST["id"] ?? 0);
+        if ($id <= 0) json_response(["ok" => false, "error" => "ID inválido."]);
+
+        $st = $pdo->prepare("DELETE FROM Banners WHERE idBanners = :id");
+        $st->bindValue(":id", $id, PDO::PARAM_INT);
+        $st->execute();
+
+        json_response(["ok" => true, "msg" => "Banner excluído com sucesso!"]);
+    } catch (Throwable $e) {
+        json_response(["ok" => false, "error" => "Erro ao excluir: " . $e->getMessage()], 500);
     }
-
-    $st = $pdo->prepare("DELETE FROM Banners WHERE idBanners = :id");
-    $st->bindValue(':id', $id, PDO::PARAM_INT);
-    $st->execute();
-
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['excluir_banner' => 'ok']);
-
-  } catch (Throwable $e) {
-    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'Erro ao excluir: ' . $e->getMessage()]);
-  }
 }
+
 
 
 try {

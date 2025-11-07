@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,12 +11,14 @@
   <!-- Estilos da página -->
   <link rel="stylesheet" href="../css/promocoes.css" />
 </head>
+
 <body>
   <!-- 1) Menu de navegação -->
   <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold" href="#">UP1gamers</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false" aria-label="Alternar navegação">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav"
+        aria-controls="topNav" aria-expanded="false" aria-label="Alternar navegação">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -26,7 +29,7 @@
           <li class="nav-item"><a class="nav-link active" href="promocoes_logista.html">Promoções</a></li>
           <li class="nav-item"><a class="nav-link  " href="frete_pagamento_logista.html">Pagamentos e Fretes</a></li>
           <li class="nav-item"><a class="nav-link " href="chat_logista.html">Conversas</a></li>
-      
+
         </ul>
       </div>
     </div>
@@ -47,14 +50,17 @@
           <strong>Cadastrar/Atualizar banner</strong>
         </div>
         <div class="card-body">
-          <form action="../php/cadastro_bannes.php" method="post"  enctype="multipart/form-data" class="row g-3">
+          <form id="formBanner" action="../php/cadastro_bannes.php" method="post" enctype="multipart/form-data"
+            class="row g-3">
+            <input type="hidden" name="id" id="idBanner"> <!-- ← campo oculto -->
+
             <div class="col-12 col-md-4">
               <label class="form-label">Imagem do banner</label>
-              <div class="banner-thumb border rounded d-flex align-items-center justify-content-center">
+              <div class="banner-thumb border rounded d-flex align-items-center justify-content-center"
+                style="height: 200px; overflow: hidden;">
                 <span class="text-muted">Prévia</span>
               </div>
-              <input name="imagemb" type="file" class="form-control mt-2" accept="image/*">
-              
+              <input name="imagemb" type="file" class="form-control mt-2" id="imagemb" accept="image/*">
             </div>
 
             <div class="col-12 col-md-8">
@@ -70,7 +76,8 @@
                 </div>
                 <div class="col-md-8">
                   <label class="form-label">Descrição</label>
-                  <input name="descricao" type="text" class="form-control" maxlength="45" placeholder="Texto curto do banner">
+                  <input name="descricao" type="text" class="form-control" maxlength="45"
+                    placeholder="Texto curto do banner">
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">Link</label>
@@ -79,34 +86,36 @@
               </div>
 
               <div class="d-flex gap-2 mt-3">
-                  <button type="submit" class="btn btn-primary">Cadastrar</button>
-              
-                  <button type="submit" name="acao" value="excluir">Excluir</button>  
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+                <button type="submit" name="acao" value="excluir">Excluir</button>
               </div>
             </div>
           </form>
         </div>
 
         <!-- Lista de Banners -->
-<div class="card-body border-top">
-  <div class="table-responsive">
-    <table class="table align-middle table-hover table-list">
-      <thead class="table-light">
-        <tr>
-          <th>ID</th>
-          <th>Descrição</th>
-          <th>Data de Validade</th>
-          <th>Link</th>
-          <th class="text-end">Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tbBanners">
-        <!-- Linhas serão inseridas via JS -->
-      </tbody>
-      
-    </table>
-  </div>
-</div>
+        <div class="card-body border-top">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th> <!-- ← novo -->
+                  <th>Imagem</th>
+                  <th>Descrição</th>
+                  <th>Validade</th>
+                  <th>Link</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaBanners">
+                <tr>
+                  <td colspan="6" class="text-center text-muted">Carregando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
     </section>
 
@@ -141,8 +150,8 @@
               <input type="number" name="Quantidade" class="form-control" min="1" placeholder="50">
             </div>
             <div class="col-12 d-flex gap-2">
-              <button type="submit" class="btn btn-primary" >Cadastrar</button>
-              <button type="button" class="btn btn-outline-danger" >Excluir</button>
+              <button type="submit" class="btn btn-primary">Cadastrar</button>
+              <button type="button" class="btn btn-outline-danger">Excluir</button>
             </div>
           </form>
         </div>
@@ -160,8 +169,8 @@
                   <th class="text-end" style="width:170px;">Ações</th>
                 </tr>
               </thead>
-              <tbody id="lcupoms" ></tbody>
-            
+              <tbody id="lcupoms"></tbody>
+
             </table>
           </div>
         </div>
@@ -199,9 +208,9 @@
               <div class="form-text">* Campo visual; controle real no backend se desejar expirar.</div>
             </div>
             <div class="col-12 d-flex gap-2">
-              <button type="submit" class="btn btn-primary" >Aplicar</button>
-              <button type="submit" class="btn btn-outline-secondary" >Editar</button>
-              <button type="submit" class="btn btn-outline-danger" >Remover</button>
+              <button type="submit" class="btn btn-primary">Aplicar</button>
+              <button type="submit" class="btn btn-outline-secondary">Editar</button>
+              <button type="submit" class="btn btn-outline-danger">Remover</button>
             </div>
           </form>
         </div>
@@ -225,8 +234,8 @@
                   <td>31/10/2025</td>
                   <td class="text-end">
                     <div class="btn-group btn-group-sm">
-                      <a href="#" class="btn btn-outline-secondary " >Editar</a>
-                      <a href="#" class="btn btn-outline-danger " >Remover</a>
+                      <a href="#" class="btn btn-outline-secondary ">Editar</a>
+                      <a href="#" class="btn btn-outline-danger ">Remover</a>
                     </div>
                   </td>
                 </tr>
@@ -236,13 +245,13 @@
                   <td>15/11/2025</td>
                   <td class="text-end">
                     <div class="btn-group btn-group-sm">
-                      <a href="#" class="btn btn-outline-secondary " >Editar</a>
-                      <a href="#" class="btn btn-outline-danger " >Remover</a>
+                      <a href="#" class="btn btn-outline-secondary ">Editar</a>
+                      <a href="#" class="btn btn-outline-danger ">Remover</a>
                     </div>
                   </td>
                 </tr>
               </tbody>
-             
+
             </table>
           </div>
         </div>
@@ -272,16 +281,16 @@
             </div>
             <div class="col-md-3">
               <label class="form-label">Preço atual (visual)</label>
-              <input type="text" class="form-control" placeholder="R$ 199,90" >
+              <input type="text" class="form-control" placeholder="R$ 199,90">
             </div>
             <div class="col-md-3">
               <label class="form-label">Preço promocional</label>
               <input type="number" class="form-control" min="0" step="0.01" placeholder="169.90">
             </div>
             <div class="col-12 d-flex gap-2">
-              <button type="submit" class="btn btn-primary" >Aplicar</button>
-              <button type="submit" class="btn btn-outline-secondary" >Editar</button>
-              <button type="submit" class="btn btn-outline-danger" >Remover</button>
+              <button type="submit" class="btn btn-primary">Aplicar</button>
+              <button type="submit" class="btn btn-outline-secondary">Editar</button>
+              <button type="submit" class="btn btn-outline-danger">Remover</button>
             </div>
           </form>
         </div>
@@ -301,9 +310,9 @@
                 </tr>
               </thead>
               <tbody>
-              
+
               </tbody>
-             
+
             </table>
           </div>
         </div>
@@ -323,6 +332,31 @@
   </script>
 
 
-<script src="../JS/bannes.js"></script>
+  <script src="../JS/bannes.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.querySelector('input[name="imagemb"]');
+      const thumb = document.querySelector('.banner-thumb');
+
+      input.addEventListener('change', function () {
+        const file = this.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            thumb.innerHTML = `<img src="${e.target.result}" alt="Prévia" 
+                            style="max-width: 100%; max-height: 100%; object-fit: cover;">`;
+          };
+
+          reader.readAsDataURL(file);
+        } else {
+          thumb.innerHTML = '<span class="text-muted">Prévia</span>';
+        }
+      });
+    });
+  </script>
 </body>
+
 </html>
